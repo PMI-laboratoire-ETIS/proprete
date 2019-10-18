@@ -5,6 +5,7 @@ Séparations d'images propres et sales issues d'un examen de l'intestin grêle p
 
 Structure du dossier attendue pour faire fonctionner le programme actuel :
 
+```
 proprete
 │
 ├── modele_grele.py
@@ -14,11 +15,12 @@ proprete
     ├── expert2.png
     │   ...
     └── expert600.png
-    
+```
 
 En entraînant le réseau sur 500 images et en le testant sur les 100 restantes, nous avons obtenu une précision de 99.4% sur l'ensemble d'entraînement, et de 93% sur l'ensemble de test.
 
 Architecture du réseau :
+```
 ________________________________________________________________________________________________
 Layer (type)                               Output Shape                          Param #        
 ================================================================================================
@@ -46,3 +48,4 @@ Total params: 2,396,385
 Trainable params: 2,396,385
 Non-trainable params: 0
 ________________________________________________________________________________________________
+```
