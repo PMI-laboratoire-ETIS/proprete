@@ -24,8 +24,9 @@ epochs = 100
 
 #%% Load & crop
 d = [p for p in os.listdir("images_intestins/") if "expert" in p]
-d.sort(key=lambda x:int(x[6:-4]))
-x = np.asarray([np.array(Image.open("images_intestins/"+im).crop((32,32,544,544)).resize((150,150))) for im in d])
+d.sort(key=lambda x:int(x[6:-4])) # Retrier : 1, 10, 100, 2, 20, ..., 99 -> 1,2,3, ..., 600
+# Prépare les images pour la lecture dans le réseau de neurones (resize à 150x150 car trop de mémoire requise sur mon ordi sinon)
+x = np.asarray([np.array(Image.open("images_intestins/"+im).crop((32,32,544,544)).resize((150,150))) for im in d]) 
 y = np.asarray(pd.read_excel("Verite_Terrain.xls", header=None))[:,1]
 
 input_shape = x.shape[1:]
