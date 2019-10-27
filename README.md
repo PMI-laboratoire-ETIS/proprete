@@ -67,5 +67,4 @@ Sensibilité : 93.55%
 Spécificité : 88.41%
 
 Courbe ROC :
-
 ![alt text](./graphs/Courbe_ROC.svg "Courbe ROC")
