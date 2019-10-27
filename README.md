@@ -62,8 +62,8 @@ Non-trainable params: 0
 ____________________________________________________________________________________________________
 ```
 
-Résultats actuels :
-Sensibilité : 93.55%
+Résultats actuels :  
+Sensibilité : 93.55%  
 Spécificité : 88.41%
 
 ![alt text](./graphs/Courbe_ROC.svg "Courbe ROC")
