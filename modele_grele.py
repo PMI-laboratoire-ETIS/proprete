@@ -108,9 +108,9 @@ print("Specificity: {:.2%}".format(specificity))
 fpr, tpr = roc_curve(y_test, y_pred)[:-1]
 
 figroc, axroc = plt.subplots(1, 1, clear=True, num="Courbe ROC")
-axroc.plot(fpr, tpr, label="Covnet")
+axroc.plot(fpr, tpr, label="CNN")
 axroc.plot([0,1],[0,1],'r--')
 axroc.set_xlim(0,1)
 axroc.set_ylim(0,1)
-axroc.scatter(1 - specificity, sensitivity, marker="d", label="Operating point")
+axroc.scatter(1 - specificity, sensitivity, marker="d", label="Point d'opération")
 axroc.legend()
