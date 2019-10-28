@@ -2,7 +2,7 @@
 """
 Created on Sat Oct 12 12:20:21 2019
 
-@author: julien
+@author: groupe pmi
 """
 
 #%% imports
