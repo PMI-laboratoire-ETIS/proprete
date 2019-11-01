@@ -21,7 +21,7 @@ from PIL import Image
 d = [p for p in os.listdir("images_intestins/") if "expert" in p]
 d.sort(key=lambda x:int(x[6:-4])) # Retrier : 1, 10, 100, 2, 20, ..., 99 -> 1,2,3, ..., 600
 # Prépare les images pour la lecture dans le réseau de neurones (resize à 150x150 car trop de mémoire requise sur mon ordi sinon)
-x = np.asarray([np.array(Image.open("images_intestins/"+im).crop((32,32,544,544))) for im in d]) #.resize((150,150))
+x = np.asarray([np.array(Image.open("images_intestins/"+im)) for im in d]) #.resize((150,150))
 y = np.asarray(pd.read_csv("terrain.csv", header=None))[:,1]
         
 #%% Tirage aléatoire de 500 images train et 100 images test
@@ -50,15 +50,9 @@ for i in range(x_test.shape[0]):
 #%% Création d'un modèle de génération aléatoire
 # stockage des images dans le répertoire sous le nom 'propre_XXXX.png' ou 'sale_XXXX.png'
 datagen = ImageDataGenerator(
-        rotation_range=30,
-        width_shift_range=0.1,
-        height_shift_range=0.1,
-        rescale=1./255,
-        shear_range=0.2,
-        zoom_range=0.2,
-        horizontal_flip=True,
-        vertical_flip=True,
-        fill_mode='nearest') #Modèle du générateur automatique
+        rotation_range=360,
+        fill_mode='constant',
+        cval=0) #Modèle du générateur automatique
 
 sale = [p for p in os.listdir(".\\BDD\\train\\sale\\") if "exp" in p] 
 propre = [p for p in os.listdir(".\\BDD\\train\\propre\\") if "exp" in p]
