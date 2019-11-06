@@ -1,48 +1,56 @@
 # -*- coding: utf-8 -*-
 """
-Created on Sat Oct 12 12:20:21 2019
+Created on Tue Oct 29 11:34:06 2019
 
 @author: groupe pmi
 """
 
-#%% imports
-import numpy as np
-import pandas as pd
 
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, Flatten, Conv2D, MaxPooling2D
 from keras.regularizers import l2
-from sklearn.model_selection import train_test_split
+from keras.preprocessing.image import ImageDataGenerator
+
+import numpy as np
 from sklearn.metrics import recall_score, roc_curve
 
 import matplotlib.pyplot as plt
 
-import os
-from PIL import Image
-
-batch_size = 32
-epochs = 100
 imdir = "images_intestins"
+batch_size = 32
+input_shape = (512, 512, 3) 
 
-#%% Load & crop
-d = [p for p in os.listdir(imdir) if "png" in p]
-d.sort(key=lambda x:int(x[6:-4])) # Retrier : 1, 10, 100, 2, 20, ..., 99 -> 1,2,3, ..., 600
-# Prépare les images pour la lecture dans le réseau de neurones (resize à 150x150 car trop de mémoire requise sur mon ordi sinon)
-#x = np.asarray([np.array(Image.open(os.path.join(imdir, im)).crop((32,32,544,544)).resize((150,150))) for im in d]) 
-x = np.asarray([np.array(Image.open(os.path.join(imdir, im)).resize((150,150))) for im in d]) 
-y = np.asarray(pd.read_excel("Verite_Terrain.xls", header=None))[:,1]
+def bruit(image, λ):
+    img = image + np.random.normal(size=image.shape) * image * λ
+    img[img < 0] = 0 ; img[img > 255] = 255
+    return img
 
-input_shape = x.shape[1:]
+datagen = ImageDataGenerator(
+        rescale=1./255,
+        horizontal_flip=True,
+        vertical_flip=True,
+        fill_mode='constant',
+        cval = 0,
+        validation_split=1/6,
+        preprocessing_function=lambda img : bruit(img, 0.1)) #Modèle du générateur automatique
 
-#%% Split train and test data, normalize
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=1/6)
 
-x_train = x_train.astype(np.float32)
-x_test = x_test.astype(np.float32)
-x_train /= 255
-x_test /= 255
-#%% Network creation
+train_generator = datagen.flow_from_directory(
+        imdir,
+        target_size=input_shape[:2],
+        batch_size=batch_size,
+        class_mode='binary',
+        classes=['propre', 'sale'],
+        subset='training')
+
+validation_generator = datagen.flow_from_directory(
+        imdir,
+        target_size=input_shape[:2],
+        batch_size=batch_size,
+        classes=['propre', 'sale'],
+        class_mode='binary',
+        subset='validation')
 
 model = Sequential()
 
@@ -69,13 +77,13 @@ model.compile(loss=keras.losses.binary_crossentropy,
               optimizer="adam",
               metrics=['accuracy'])
 
-#%% Learn data
-history = model.fit(x_train, y_train,
-                    
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1,
-          validation_data=(x_test, y_test))
+
+history = model.fit_generator(
+        train_generator,
+        steps_per_epoch=2000,
+        epochs=50,
+        validation_data=validation_generator,
+        validation_steps=800)
 
 #%% Plot history of learning process
 figm, axs = plt.subplots(1, 2, clear=True, num="Metrics")
