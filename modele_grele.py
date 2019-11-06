@@ -42,7 +42,8 @@ test_data = ImageDataGenerator(rescale=1/255).flow_from_directory(
         class_mode="binary"
         )
 x_test, y_test = next(test_data)
-
+from sklearn.preprocessing import scale
+scale
 
 #%% Network creation
 
